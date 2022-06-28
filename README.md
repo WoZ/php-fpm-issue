@@ -12,6 +12,9 @@ Make a curl request from your host machine
 
 `curl -I http://localhost:8085/phpinfo.php`
 
+> You may change .env file or use env variable to change nginx port on the host machine.
+> `$ HOST_NGINX_PORT=8085 docker-compose up --build`
+
 Check an output of the `docker-compose` command. You may see that `access.log = /proc/self/fd/2` setting works and
 access log record was added to the stderr output.
 
