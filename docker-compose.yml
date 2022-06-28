@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  php-fpm:
+    hostname: "php-fpm"
+    build:
+      context: .
+      dockerfile: php-fpm.Dockerfile
+    volumes:
+      - "./data/php-fpm/root/usr/local/etc/php-fpm.conf:/usr/local/etc/php-fpm.conf"
+      - "./src:/var/www/html"
+    #command: php-fpm
+    command: strace -tt -f -s 200 --decode-fds=all -e trace=execve,open,fcntl,read,write,close,dup,dup2,pipe php-fpm
+    cap_add:
+      - SYS_PTRACE
+
+  nginx:
+    hostname: "nginx"
+    depends_on:
+      - php-fpm
+    image: nginx:1.21.6-alpine
+    ports:
+      - "${HOST_NGINX_PORT:?Port value must be specified}:80"
+    volumes:
+      - "./data/nginx/root/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
